@@ -20,6 +20,8 @@ const BreedImagesSection = ({ breedId }) => {
 
     const getBreedImages = () => {
         if (!breedId) {
+            setBreedImages([])
+            setLoadMore(false)
             return
         }
         setLoading(true)
@@ -64,14 +66,22 @@ const BreedImagesSection = ({ breedId }) => {
         <>
             <Row>
                 {
+                    (!breedImages || breedImages.length <= 0) &&
+                    <h4>Please select a breed to show images.</h4>
+                }
+                {
                     breedImages && breedImages.map(({ url, id }) =>
                         <Col lg={3} md={4} xs={6} style={{ margin: '10px 0' }}>
                             <Card>
                                 <Card.Img variant="top" src={url} />
                                 <Card.Body>
                                     <div className="d-grid">
-                                        <Button variant="primary" onClick={() => handleClickCatDetails(id)}>View Details</Button>
-
+                                        <Button
+                                            variant="primary"
+                                            onClick={() => handleClickCatDetails(id)}
+                                        >
+                                            View Details
+                                        </Button>
                                     </div>
                                 </Card.Body>
                             </Card>

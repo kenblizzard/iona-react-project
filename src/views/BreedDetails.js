@@ -12,12 +12,18 @@ const BreedDetails = () => {
     const navigate = useNavigate()
 
     useEffect(() => {
+        setLoading(true)
+        setError(false)
         axios.get(`https://api.thecatapi.com/v1/images/${params.imageId}`)
             .then(({ data }) => {
                 setBreedDetails({ ...data, ...data.breeds[0] })
             })
-
-
+            .catch(() =>
+                setError(true)
+            )
+            .finally(() => {
+                setLoading(false)
+            })
     }, [params.imageId])
 
     const handleOnBack = () => {
@@ -26,23 +32,35 @@ const BreedDetails = () => {
 
     return (
         <Container>
-            <Button onClick={handleOnBack}>Back</Button>
+            <Button onClick={handleOnBack} style={{margin: '10px 0'}}>Back</Button>
             <Card>
                 {
-                    breedDetails &&
+                    loading &&
+                    <Card.Body>
+                        Loading Cat Details...
+                    </Card.Body>
+                }
+                {
+                    error &&
+                    <Card.Body>
+                        Apologies but we could not load cat details for you at this time! Miau!
+                    </Card.Body>
+                }
+                {
+                    !error && breedDetails &&
                     <>
                         <Card.Img variant="top" src={breedDetails.url} />
                         <Card.Body>
-                            <h2>{breedDetails.name}</h2>
-                            <h3>Origin: {breedDetails.origin}</h3>
-                            <h3>{breedDetails.temperament}</h3>
+                            <h3>{breedDetails.name}</h3>
+                            <h4>Origin: {breedDetails.origin}</h4>
+                            <strong>{breedDetails.temperament}</strong>
                             <p>{breedDetails.description}</p>
                         </Card.Body>
                     </>
                 }
             </Card>
         </Container>
-    ) 
+    )
 }
 
 export default BreedDetails
