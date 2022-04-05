@@ -2,6 +2,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { Card, Col, Row, Button, Alert } from "react-bootstrap"
 import { useNavigate } from "react-router-dom"
+import { unionBy } from "lodash"
 
 const BreedImagesSection = ({ breedId }) => {
 
@@ -36,17 +37,23 @@ const BreedImagesSection = ({ breedId }) => {
                 }
             })
             .then(({ data }) => {
+                // If fetched more images of the currently selected breed
                 if (breedId === selectedBreed) {
-                    setBreedImages([...breedImages, ...data])
-                } else {
+                    // Append unique result to existing image list
+                    let newBreedImages = unionBy(breedImages, data, 'id')
+                    setBreedImages(newBreedImages)
+
+                    // If new images were found, load more
+                    if (newBreedImages.length > breedImages.length) {
+                        setLoadMore(true)
+                        setPageNumber(pageNumber + 1)
+                    } else {
+                        setLoadMore(false)
+                    }
+                } else { // else selected new breed
                     setBreedImages(data)
-                    setPageNumber(1)
-                }
-                if (data.length >= 10) {
-                    setLoadMore(true)
-                    setPageNumber(pageNumber + 1)
-                } else {
-                    setLoadMore(false)
+                    setPageNumber(2)
+                    setLoadMore(data.length >= 10)
                 }
             })
             .catch(() => {
