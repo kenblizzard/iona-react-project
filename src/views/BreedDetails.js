@@ -1,6 +1,6 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
-import { Card, Container, Button } from "react-bootstrap"
+import { Card, Container, Button, Alert } from "react-bootstrap"
 import { useNavigate, useParams } from "react-router-dom"
 
 const BreedDetails = () => {
@@ -27,12 +27,11 @@ const BreedDetails = () => {
     }, [params.imageId])
 
     const handleOnBack = () => {
-        navigate(-1)
+        navigate(`/${breedDetails.id}`)
     }
 
     return (
         <Container>
-            <Button onClick={handleOnBack} style={{margin: '10px 0'}}>Back</Button>
             <Card>
                 {
                     loading &&
@@ -43,12 +42,15 @@ const BreedDetails = () => {
                 {
                     error &&
                     <Card.Body>
-                        Apologies but we could not load cat details for you at this time! Miau!
+                        <Alert variant="danger">Apologies but we could not load cat details for you at this time! Miau!</Alert>
                     </Card.Body>
                 }
                 {
                     !error && breedDetails &&
                     <>
+                        <Card.Header>
+                            <Button onClick={handleOnBack} style={{margin: '10px 0'}}>Back</Button>
+                        </Card.Header>
                         <Card.Img variant="top" src={breedDetails.url} />
                         <Card.Body>
                             <h3>{breedDetails.name}</h3>
