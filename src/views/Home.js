@@ -50,8 +50,8 @@ const HomePage = () => {
                         >
                             <option value="" selected={!params.breedId ? 'selected' : ''}>Select Breed</option>
                             {
-                                breeds && breeds.map((breed) =>
-                                    <option value={breed.id} selected={breed.id === params.breedId ? 'selected' : ''}>{breed.name}</option>
+                                breeds && breeds.map((breed, index) =>
+                                    <option value={breed.id} selected={breed.id === params.breedId ? 'selected' : ''} key={`breed-${index}`}>{breed.name}</option>
                                 )
                             }
                         </Form.Select>

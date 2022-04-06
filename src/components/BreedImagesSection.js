@@ -77,8 +77,8 @@ const BreedImagesSection = ({ breedId }) => {
                     <h4>Please select a breed to show images.</h4>
                 }
                 {
-                    breedImages && breedImages.map(({ url, id }) =>
-                        <Col lg={3} md={4} xs={6} style={{ margin: '10px 0' }}>
+                    breedImages && breedImages.map(({ url, id }, index) =>
+                        <Col lg={3} md={4} xs={6} style={{ margin: '10px 0' }} key={`img-${index}`}>
                             <Card>
                                 <Card.Img variant="top" src={url} />
                                 <Card.Body>
