@@ -16,15 +16,15 @@ const BreedImagesSection = ({ breedId }) => {
     const navigate = useNavigate()
 
     useEffect(() => {
-        getBreedImages()
-    }, [breedId])
-
-    const getBreedImages = () => {
         if (!breedId) {
             setBreedImages([])
             setLoadMore(false)
             return
         }
+        getBreedImages()
+    }, [breedId])
+
+    const getBreedImages = () => {
         setLoading(true)
         setError(false)
         setSelectedBreed(breedId)
@@ -36,26 +36,7 @@ const BreedImagesSection = ({ breedId }) => {
                     limit: 10
                 }
             })
-            .then(({ data }) => {
-                // If fetched more images of the currently selected breed
-                if (breedId === selectedBreed) {
-                    // Append unique result to existing image list
-                    let newBreedImages = unionBy(breedImages, data, 'id')
-                    setBreedImages(newBreedImages)
-
-                    // If new images were found, load more
-                    if (newBreedImages.length > breedImages.length) {
-                        setLoadMore(true)
-                        setPageNumber(pageNumber + 1)
-                    } else {
-                        setLoadMore(false)
-                    }
-                } else { // else selected new breed
-                    setBreedImages(data)
-                    setPageNumber(2)
-                    setLoadMore(data.length >= 10)
-                }
-            })
+            .then(handleGetBreedImagesResponse)
             .catch(() => {
                 setError(true)
                 setLoadMore(false)
@@ -63,6 +44,27 @@ const BreedImagesSection = ({ breedId }) => {
             .finally(() => {
                 setLoading(false)
             })
+    }
+
+    const handleGetBreedImagesResponse = ({ data }) => {
+        // If fetched more images of the currently selected breed
+        if (breedId === selectedBreed) {
+            // Append unique result to existing image list
+            let newBreedImages = unionBy(breedImages, data, 'id')
+            setBreedImages(newBreedImages)
+
+            // If new images were found, load more
+            if (newBreedImages.length > breedImages.length) {
+                setLoadMore(true)
+                setPageNumber(pageNumber + 1)
+            } else {
+                setLoadMore(false)
+            }
+        } else { // else selected new breed
+            setBreedImages(data)
+            setPageNumber(2)
+            setLoadMore(data.length >= 10)
+        }
     }
 
     const handleClickCatDetails = (id) => {
